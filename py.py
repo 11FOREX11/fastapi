@@ -20,5 +20,21 @@ fake_trades = [
 ]
 
 @app.get("/trades")
-def get_trades(limit: int, offset: int):
+def get_trades(limit: int = 1, offset: int = 1):
   return fake_trades[offset:][:limit]
+
+
+fake_users2 = [
+  {"id":1, "role": "admin", "name": "Bob"},
+  {"id":2, "role": "user", "name": "Alice"},
+  {"id":3, "role": "user", "name": "John"},
+]
+
+@app.post("/users/{user_id}")
+def change_user_name(user_id: int, new_name: str):
+  current_user = list(filter(lambda user: user.get("id") == user_id, fake_users2))
+  if current_user:
+    current_user[0]["name"] = new_name
+    return {"status": 200, "data": current_user[0]}
+  else:
+    return {"status": 404, "message": "User not found"}
